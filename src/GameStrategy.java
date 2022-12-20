@@ -1,0 +1,32 @@
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+public class MenuStrategy implements KeyHandlerStrategy, KeyListener {
+    private boolean upPressed, downPressed, spacePressed;
+
+    @Override
+    public void Update() {
+
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        int code = e.getKeyCode();
+        if(code == KeyEvent.VK_UP) upPressed = true;
+        if(code == KeyEvent.VK_DOWN) downPressed = true;
+        if(code == KeyEvent.VK_SPACE) spacePressed = true;
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        int code = e.getKeyCode();
+        if(code == KeyEvent.VK_UP) upPressed = false;
+        if(code == KeyEvent.VK_DOWN) downPressed = false;
+        if(code == KeyEvent.VK_SPACE) spacePressed = false;
+    }
+}
