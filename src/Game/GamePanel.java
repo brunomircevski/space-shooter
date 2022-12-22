@@ -1,22 +1,32 @@
+package Game;
+
 import Entity.*;
+import Entity.Enemy.*;
 import KeyHandler.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class GamePanel extends JPanel implements Runnable{
-    final int screenWidth = 1200;
-    final int screenHeight = 700;
-    final int FPS = 60;
+    public final int screenWidth = 1200, screenHeight = 700, FPS = 60;
     private String state = "menu";
+    public int score = 0, maxEnemies = 50;
 
-    Ship ship = new Ship(100, 100);
+    public Ship ship = new Ship(100, 100);
 
     KeyHandlerStrategy keyHandlerMenu = new MenuStrategy(this);
     KeyHandlerStrategy keyHandlerGame = new GameStrategy(this);
     KeyHandlerStrategy keyHandler = keyHandlerMenu;
 
     Thread gameThread;
+
+    private Settings settings = Settings.getInstance();
+
+    private EnemyFactory enemyFactory = new EnemyFactory();
+
+    private LinkedList<Enemy> enemies = new LinkedList<Enemy>();
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -58,6 +68,18 @@ public class GamePanel extends JPanel implements Runnable{
 
     public void update() {
         keyHandler.Update();
+
+        if(state == "menu") {
+            return;
+        }
+
+        if(enemies.size() < maxEnemies && Math.random() < 0.05) enemies.add(enemyFactory.createEnemy());
+
+        for(int i = 0; i < enemies.size(); i++) {
+            Enemy e = enemies.get(i);
+            e.update();
+            if(e.x < 0) enemies.remove(e);
+        };
     }
 
     public void paintComponent(Graphics g) {
@@ -65,14 +87,21 @@ public class GamePanel extends JPanel implements Runnable{
 
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.white);
+        g2.setFont(new Font("Monospaced", Font.PLAIN, 20));
 
         if(state == "menu") {
-            g2.drawString("Press space to start", screenWidth/2, screenHeight/2);
+            String menuString = "Press space to start";
+            g2.drawString(menuString, screenWidth/2 - g2.getFontMetrics().stringWidth(menuString)/2, screenHeight/2);
+            g2.drawString("High score: " + settings.getHighScore(), screenWidth - 220, screenHeight - 20);
             g2.dispose();
             return;
         }
 
-        g2.fillRect(ship.x, ship.y, ship.width, ship.height);
+        enemies.forEach((e) -> e.draw(g2));
+
+        ship.draw(g2);
+
+        g2.drawString("Score: " + score, screenWidth - 150, screenHeight - 20);
 
         g2.dispose();
     }

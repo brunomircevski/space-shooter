@@ -1,3 +1,9 @@
-public class Entity {
-    public int x, y
+package Entity;
+
+public abstract class Entity {
+    public int x, y;
+
+    public void draw() {}
+
+    public void update() {}
 }

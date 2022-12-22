@@ -1,3 +1,7 @@
+package KeyHandler;
+
+import Game.*;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -6,7 +10,7 @@ public class GameStrategy implements KeyHandlerStrategy, KeyListener {
     private int a;
     private GamePanel gp;
 
-    GameStrategy(GamePanel _gp) {
+    public GameStrategy(GamePanel _gp) {
         gp = _gp;
     }
 

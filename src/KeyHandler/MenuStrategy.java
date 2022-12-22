@@ -1,3 +1,7 @@
+package KeyHandler;
+
+import Game.*;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -5,7 +9,7 @@ public class MenuStrategy implements KeyHandlerStrategy, KeyListener {
     private boolean spacePressed;
     private GamePanel gp;
 
-    MenuStrategy(GamePanel _gp) {
+    public MenuStrategy(GamePanel _gp) {
         gp = _gp;
     }
 
