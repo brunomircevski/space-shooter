@@ -1,19 +1,26 @@
 package Game;
 
 import Entity.*;
+import Entity.Bullet.Bullet;
+import Entity.Bullet.BulletBasic;
+import Entity.Bullet.BulletExplosive;
+import Entity.Bullet.BulletLaser;
 import Entity.Enemy.*;
 import KeyHandler.*;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 
 public class GamePanel extends JPanel implements Runnable{
     public final int screenWidth = 1200, screenHeight = 700, FPS = 60;
     private String state = "menu";
-    public int score = 0, maxEnemies = 50;
-
+    private int score = 0, maxEnemies = 20, animationStep = 0;
+    public int bulletDelay = 15;
     public Ship ship = new Ship(100, 100);
 
     KeyHandlerStrategy keyHandlerMenu = new MenuStrategy(this);
@@ -27,6 +34,9 @@ public class GamePanel extends JPanel implements Runnable{
     private EnemyFactory enemyFactory = new EnemyFactory();
 
     private LinkedList<Enemy> enemies = new LinkedList<Enemy>();
+    private LinkedList<Bullet> bullets = new LinkedList<Bullet>();
+
+    private BufferedImage basicBulletImage, laserBulletImage, explosiveBulletImage;
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -34,6 +44,14 @@ public class GamePanel extends JPanel implements Runnable{
         this.setDoubleBuffered(true);
         this.addKeyListener(keyHandler);
         this.setFocusable(true);
+
+        try {
+            basicBulletImage = ImageIO.read(new File("res/images/basic_bullet.png"));
+            laserBulletImage = ImageIO.read(new File("res/images/laser_bullet.png"));
+            explosiveBulletImage = ImageIO.read(new File("res/images/explosion_bullet.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void startGameThread() {
@@ -80,6 +98,12 @@ public class GamePanel extends JPanel implements Runnable{
             e.update();
             if(e.x < 0) enemies.remove(e);
         };
+
+        for(int i = 0; i < bullets.size(); i++) {
+            Bullet b = bullets.get(i);
+            b.update();
+            if(b.x > screenWidth) bullets.remove(b);
+        };
     }
 
     public void paintComponent(Graphics g) {
@@ -98,12 +122,17 @@ public class GamePanel extends JPanel implements Runnable{
         }
 
         enemies.forEach((e) -> e.draw(g2));
+        bullets.forEach((b) -> b.draw(g2));
 
-        ship.draw(g2);
+        ship.draw(g2, animationStep);
 
+        g2.setColor(Color.white);
         g2.drawString("Score: " + score, screenWidth - 150, screenHeight - 20);
 
         g2.dispose();
+
+        animationStep++;
+        if(animationStep > 2) animationStep = 0;
     }
 
     public void changeState(String st) {
@@ -112,6 +141,8 @@ public class GamePanel extends JPanel implements Runnable{
         if(st == "menu" && state != "menu") {
             state = "menu";
             keyHandler = keyHandlerMenu;
+            bullets.clear();
+            enemies.clear();
         }
         else if(st == "game" && state != "game") {
             state = "game";
@@ -119,5 +150,19 @@ public class GamePanel extends JPanel implements Runnable{
         }
 
         this.addKeyListener(keyHandler);
+    }
+
+    public void shoot() {
+        switch(ship.shipType) {
+            case "basic":
+                bullets.add(new BulletBasic(ship.y + ship.size/2, basicBulletImage, 5));
+                break;
+            case "laser":
+                bullets.add(new BulletLaser(ship.y + ship.size/2, laserBulletImage, 5, 3));
+                break;
+            case "explosive":
+                bullets.add(new BulletExplosive(ship.y + ship.size/2, explosiveBulletImage, 5, 3));
+                break;
+        }
     }
 }
