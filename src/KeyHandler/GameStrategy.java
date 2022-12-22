@@ -1,12 +1,27 @@
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class MenuStrategy implements KeyHandlerStrategy, KeyListener {
+public class GameStrategy implements KeyHandlerStrategy, KeyListener {
     private boolean upPressed, downPressed, spacePressed;
+    private int a;
+    private GamePanel gp;
+
+    GameStrategy(GamePanel _gp) {
+        gp = _gp;
+    }
 
     @Override
     public void Update() {
+        if(upPressed && a > -16) a-=2;
+        if(downPressed && a < 16) a+=2;
 
+        gp.ship.y += a;
+
+        if(a > 0) a--;
+        if(a < 0) a++;
+
+        if(gp.ship.y > gp.screenHeight - gp.ship.height) gp.ship.y = gp.screenHeight - gp.ship.height;
+        if(gp.ship.y < 0) gp.ship.y = 0;
     }
 
     @Override
@@ -20,6 +35,7 @@ public class MenuStrategy implements KeyHandlerStrategy, KeyListener {
         if(code == KeyEvent.VK_UP) upPressed = true;
         if(code == KeyEvent.VK_DOWN) downPressed = true;
         if(code == KeyEvent.VK_SPACE) spacePressed = true;
+        if(code == KeyEvent.VK_ESCAPE) gp.changeState("menu");
     }
 
     @Override
