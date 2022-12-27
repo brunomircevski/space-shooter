@@ -14,7 +14,7 @@ public class MenuStrategy implements KeyHandlerStrategy, KeyListener {
     }
 
     @Override
-    public void Update() {
+    public void update() {
 
     }
 
@@ -27,6 +27,7 @@ public class MenuStrategy implements KeyHandlerStrategy, KeyListener {
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
         if(code == KeyEvent.VK_SPACE) gp.changeState("game");
+        if(code == KeyEvent.VK_D) gp.changeDifficulty();
     }
 
     @Override

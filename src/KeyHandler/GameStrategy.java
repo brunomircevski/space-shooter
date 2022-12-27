@@ -15,7 +15,7 @@ public class GameStrategy implements KeyHandlerStrategy, KeyListener {
     }
 
     @Override
-    public void Update() {
+    public void update() {
         if(upPressed && a > -16) a-=2;
         if(downPressed && a < 16) a+=2;
 

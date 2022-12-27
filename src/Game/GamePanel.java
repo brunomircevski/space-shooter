@@ -1,5 +1,6 @@
 package Game;
 
+import Difficulty.*;
 import Entity.*;
 import Entity.Bullet.Bullet;
 import Entity.Bullet.BulletBasic;
@@ -19,8 +20,8 @@ import java.util.LinkedList;
 public class GamePanel extends JPanel implements Runnable{
     public final int screenWidth = 1200, screenHeight = 700, FPS = 60;
     private String state = "menu";
-    private int score = 0, maxEnemies = 20, animationStep = 0;
-    public int bulletDelay = 15;
+    private int score = 0, animationStep = 0;
+    public int bulletDelay = 10;
     public Ship ship = new Ship(100, 100);
 
     KeyHandlerStrategy keyHandlerMenu = new MenuStrategy(this);
@@ -31,12 +32,14 @@ public class GamePanel extends JPanel implements Runnable{
 
     private Settings settings = Settings.getInstance();
 
-    private EnemyFactory enemyFactory = new EnemyFactory();
+    private EnemyFactory enemyFactory = new EnemyFactory(this);
 
     private LinkedList<Enemy> enemies = new LinkedList<Enemy>();
     private LinkedList<Bullet> bullets = new LinkedList<Bullet>();
 
     private BufferedImage basicBulletImage, laserBulletImage, explosiveBulletImage;
+
+    public Difficulty difficulty = new DifficultyEasy();
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -85,24 +88,40 @@ public class GamePanel extends JPanel implements Runnable{
     }
 
     public void update() {
-        keyHandler.Update();
+        keyHandler.update();
+        difficulty.update();
 
         if(state == "menu") {
             return;
         }
 
-        if(enemies.size() < maxEnemies && Math.random() < 0.05) enemies.add(enemyFactory.createEnemy());
+        if(enemies.size() < difficulty.getMaxEnemies() && difficulty.getChance()) enemies.add(enemyFactory.createEnemy());
 
         for(int i = 0; i < enemies.size(); i++) {
             Enemy e = enemies.get(i);
             e.update();
-            if(e.x < 0) enemies.remove(e);
+            if(e.getX() < 0) enemies.remove(e);
         };
 
         for(int i = 0; i < bullets.size(); i++) {
             Bullet b = bullets.get(i);
             b.update();
-            if(b.x > screenWidth) bullets.remove(b);
+            if(b.x > screenWidth) {
+                bullets.remove(b);
+                //health--;
+            }
+
+            //Collision detection
+            for(int j = 0; j < enemies.size(); j++) {
+                Enemy e = enemies.get(j);
+                if((Math.abs(e.getX() - b.x) < 5 + e.getSize()/2) && (Math.abs(e.getY() - b.y) < 5 + e.getSize()/2)) {
+                    if(b.canDamage()) e.damage(b.strength);
+                    if(!b.resistance) bullets.remove(b);
+
+                    if(e.getHealth() <= 0) enemies.remove(e);
+                }
+            };
+
         };
     }
 
@@ -117,6 +136,7 @@ public class GamePanel extends JPanel implements Runnable{
             String menuString = "Press space to start";
             g2.drawString(menuString, screenWidth/2 - g2.getFontMetrics().stringWidth(menuString)/2, screenHeight/2);
             g2.drawString("High score: " + settings.getHighScore(), screenWidth - 220, screenHeight - 20);
+            g2.drawString(difficulty.name, screenWidth/2 - 20, screenHeight - 20);
             g2.dispose();
             return;
         }
@@ -158,11 +178,20 @@ public class GamePanel extends JPanel implements Runnable{
                 bullets.add(new BulletBasic(ship.y + ship.size/2, basicBulletImage, 5));
                 break;
             case "laser":
-                bullets.add(new BulletLaser(ship.y + ship.size/2, laserBulletImage, 5, 3));
+                bullets.add(new BulletLaser(ship.y + ship.size/2, laserBulletImage, 5));
                 break;
             case "explosive":
                 bullets.add(new BulletExplosive(ship.y + ship.size/2, explosiveBulletImage, 5, 3));
                 break;
         }
+    }
+
+    public void changeDifficulty() {
+        if(difficulty instanceof DifficultyEasy) difficulty = new DifficultyHard();
+        else difficulty = new DifficultyEasy();
+    }
+
+    public void addPoints(int amount) {
+        score += amount;
     }
 }

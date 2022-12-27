@@ -5,7 +5,7 @@ import java.awt.*;
 public class EnemySmall extends Enemy implements IEnemy {
 
     public EnemySmall() {
-        maxHealth = 100;
+        maxHealth = 10;
         health = maxHealth;
         speed = 2;
         size = 30;

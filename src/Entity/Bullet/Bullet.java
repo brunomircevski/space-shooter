@@ -6,8 +6,10 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public abstract class Bullet extends Entity implements IBullet {
-    protected int speed;
+    protected float speed;
     protected BufferedImage image;
+    public boolean resistance = false;
+    public int strength = 10;
 
     protected Bullet(int _y, BufferedImage _image, int _speed) {
         image = _image;
@@ -24,5 +26,9 @@ public abstract class Bullet extends Entity implements IBullet {
     @Override
     public void update() {
         x += speed;
+    }
+
+    public boolean canDamage() {
+        return true;
     }
 }
