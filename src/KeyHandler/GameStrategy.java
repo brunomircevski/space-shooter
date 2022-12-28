@@ -46,7 +46,12 @@ public class GameStrategy implements KeyHandlerStrategy, KeyListener {
         if(code == KeyEvent.VK_DOWN) downPressed = true;
         if(code == KeyEvent.VK_SPACE) spacePressed = true;
         if(code == KeyEvent.VK_ESCAPE) gp.changeState("menu");
-        if(code == KeyEvent.VK_D) gp.ship.changeShip();
+        if(code == KeyEvent.VK_D) {
+            if(gp.score > 500) {
+                gp.ship.changeShip();
+                gp.pressedD = true;
+            }
+        }
     }
 
     @Override

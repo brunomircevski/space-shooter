@@ -10,6 +10,6 @@ public class DifficultyEasy extends Difficulty{
     }
 
     public int getMaxEnemies() {
-        return 5 + difficultyCounter/1200;
+        return 5 + difficultyCounter/1500;
     }
 }

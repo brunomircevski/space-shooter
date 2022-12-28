@@ -19,7 +19,8 @@ public class EnemyFactory {
         else e = new EnemyBig();
 
         if(Math.random() < 0.1) e = new SpeedDecorator(e);
-        if(Math.random() < 0.3) e = new LifeDecorator(e);
+        if(Math.random() < 0.1) e = new LifeDecorator(e);
+        if(Math.random() < 0.025) e = new BonusDecorator(e, gp);
 
         return new EnemyProxy(e, gp);
     }

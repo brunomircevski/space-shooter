@@ -10,6 +10,12 @@ public class LifeDecorator extends EnemyDecorator {
     @Override
     public void damage(int amount) {
         super.damage(amount/2);
+
+    }
+
+    @Override
+    public int getHealth() {
+        return 2 * super.getHealth();
     }
 
     @Override
