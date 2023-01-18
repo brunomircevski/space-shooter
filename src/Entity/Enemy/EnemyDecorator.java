@@ -15,8 +15,8 @@ public abstract class EnemyDecorator extends Enemy implements IEnemy {
     }
 
     @Override
-    public void draw(Graphics2D g2) {
-        enemy.draw(g2);
+    public void draw(Graphics2D g2, int animationStep) {
+        enemy.draw(g2, animationStep);
     }
 
     @Override

@@ -19,8 +19,8 @@ public class BonusDecorator extends EnemyDecorator {
     }
 
     @Override
-    public void draw(Graphics2D g2) {
+    public void draw(Graphics2D g2, int animationStep) {
         g2.setColor(Color.PINK);
-        g2.fillRect(enemy.getX() - enemy.getSize()/2, enemy.getY() - enemy.getSize()/2, enemy.getSize(), enemy.getSize());
+        g2.fillOval(enemy.getX(), enemy.getY(), enemy.getSize(), enemy.getSize());
     }
 }

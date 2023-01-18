@@ -16,7 +16,7 @@ public abstract class Enemy extends Entity implements IEnemy {
     }
 
     @Override
-    public void draw(Graphics2D g2) {
+    public void draw(Graphics2D g2, int animationStep) {
 
     }
 

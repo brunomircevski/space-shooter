@@ -157,7 +157,7 @@ public class GamePanel extends JPanel implements Runnable {
             return;
         }
 
-        enemies.forEach((e) -> e.draw(g2));
+        enemies.forEach((e) -> e.draw(g2, animationStep));
         bullets.forEach((b) -> b.draw(g2));
 
         ship.draw(g2, animationStep);

@@ -19,9 +19,9 @@ public class LifeDecorator extends EnemyDecorator {
     }
 
     @Override
-    public void draw(Graphics2D g2) {
-        super.draw(g2);
+    public void draw(Graphics2D g2, int animationStep) {
         g2.setColor(Color.CYAN);
-        g2.fillRect(enemy.getX() - enemy.getSize()/4, enemy.getY() - enemy.getSize()/4, enemy.getSize()/2, enemy.getSize()/2);
+        g2.drawOval(enemy.getX() - enemy.getSize()/2 - 10, enemy.getY() - enemy.getSize()/2 - 10, enemy.getSize() + 20, enemy.getSize() + 20);
+        super.draw(g2, animationStep);
     }
 }
